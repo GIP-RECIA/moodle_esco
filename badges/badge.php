@@ -38,10 +38,12 @@ $badge = new issued_badge($id);
 
 if ($bake && ($badge->recipient->id == $USER->id)) {
     $name = str_replace(' ', '_', $badge->badgeclass['name']) . '.png';
-    $filehash = badges_bake($id, $badge->badgeid, $USER->id, true);
-    $fs = get_file_storage();
-    $file = $fs->get_file_by_hash($filehash);
-    send_stored_file($file, 0, 0, true, array('filename' => $name));
+    ob_start();
+    $file = badges_bake($id, $badge->badgeid);
+    header('Content-Type: image/png');
+    header('Content-Disposition: attachment; filename="'. $name .'"');
+    readfile($file);
+    ob_flush();
 }
 
 $PAGE->set_url('/badges/badge.php', array('hash' => $id));
