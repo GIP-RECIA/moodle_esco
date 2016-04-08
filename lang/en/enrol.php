@@ -65,6 +65,13 @@ $string['enrolxusers'] = 'Enrol {$a} users';
 $string['enroltimecreated'] = 'Enrolment created';
 $string['enroltimeend'] = 'Enrolment ends';
 $string['enroltimestart'] = 'Enrolment starts';
+////////////////////////////////////////////////
+// MODIFICATION RECIA | DEBUT | 2013-07-19
+////////////////////////////////////////////////
+$string['enroltitle'] = 'Enrol :';
+////////////////////////////////////////////////
+// MODIFICATION RECIA | FIN
+////////////////////////////////////////////////
 $string['errajaxfailedenrol'] = 'Failed to enrol user';
 $string['errajaxsearch'] = 'Error when searching users';
 $string['erroreditenrolment'] = 'An error occurred while trying to edit a users enrolment';
