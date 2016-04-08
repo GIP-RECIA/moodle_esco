@@ -1265,7 +1265,14 @@ class core_course_renderer extends plugin_renderer_base {
 
         // display course summary
         if ($course->has_summary()) {
-            $content .= html_writer::start_tag('div', array('class' => 'summary'));
+            
+            // Début modification RECIA - Cache le résumé de cours et affiche un bouton afficher/cacher résumé 
+            $content .= html_writer::start_tag('div', array('class' => 'summary_reply fold_reply plus'));
+            $content .= html_writer::tag('span', 'Cacher le résumé', array('class'=>'block-hider-hide'));
+            $content .= html_writer::tag('span', 'Afficher le résumé', array('class'=>'block-hider-show'));
+            $content .= html_writer::end_tag('div');
+            $content .= html_writer::start_tag('div', array('class' => 'summary folded'));
+            // Fin modification RECIA
             $content .= $chelper->get_course_formatted_summary($course,
                     array('overflowdiv' => true, 'noclean' => true, 'para' => false));
             $content .= html_writer::end_tag('div'); // .summary
