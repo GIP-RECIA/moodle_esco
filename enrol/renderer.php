@@ -46,6 +46,14 @@ class core_enrol_renderer extends plugin_renderer_base {
         $buttonhtml = '';
         if (count($buttons) > 0) {
             $buttonhtml .= html_writer::start_tag('div', array('class' => 'enrol_user_buttons'));
+            ////////////////////////////////////////////////
+            // MODIFICATION RECIA | DEBUT | 2013-04-23
+	    // Pour avoir le terme "Inscription" placé avant les boutons : Manuelle, Annuaire ENT, Mes classes
+            ////////////////////////////////////////////////
+            $buttonhtml .= html_writer::tag('span', get_string('enroltitle', 'enrol'), array('class'=>''));
+            ////////////////////////////////////////////////
+            // MODIFICATION RECIA | FIN
+            ////////////////////////////////////////////////
             foreach ($buttons as $button) {
                 $buttonhtml .= $this->render($button);
             }
