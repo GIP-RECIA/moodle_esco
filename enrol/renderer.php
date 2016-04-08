@@ -562,6 +562,13 @@ class course_enrolment_table extends html_table implements renderable {
      * @param array $users
      * @return void
      */
+    ////////////////////////////////////////////////
+    // MODIFICATION RECIA | DEBUT | 2013-08-29
+    // Remis comme avant car mauvais fonctionnement avec la version 2.8
+    // Le problème qui reste, et que devait corriger cette modification, est qu'un enseignant/propriétaire de cours peut se désinscrire de son cours facilement
+    // => À REVOIR
+    ////////////////////////////////////////////////
+	/* Code Avant */
     public function set_users(array $users) {
         $this->users = $users;
         $hasbulkops = !empty($this->bulkoperations);
@@ -598,6 +605,76 @@ class course_enrolment_table extends html_table implements renderable {
             $this->data[] = $row;
         }
     }
+/* Fin Code Avant
+	// Code Après
+	public function set_users(array $users, $course = NULL) {
+		global  $DB, $USER;
+        $this->users = $users;
+        $hasbulkops = !empty($this->bulkoperations);
+
+	    $user = array( 'firstname' => get_string('selectall', 'core'));
+	    $users_fake = array( );
+	    $users_fake[ '000' ] = $user; 
+	    $users = $users_fake + $users;
+
+
+        foreach ($users as $userid=>$user) {
+            $user = (array)$user;
+            $row = new html_table_row();
+            $row->attributes = array('class' => 'userinforow');
+            $row->id = 'user_'.$userid;
+            $row->cells = array();
+            if ($hasbulkops) {
+                $haspermission=1;
+                if($USER->id==$userid){
+                    $haspermission=0;
+                    $sql= "SELECT ra.* FROM {role_assignments} ra, {context} c WHERE ra.contextid=c.id AND c.instanceid=".$course->id." AND ra.userid=".$USER->id;
+                    $res = $DB->get_records_sql($sql);
+                
+                    foreach($res as $ra){
+                        $params = array('capability' => 'enrol/manual:unenrolself');
+                        $sql="SELECT rc.* FROM {role_capabilities} rc WHERE rc.roleid=".$ra->roleid." AND rc.capability=:capability";
+                        $rolecapability=$DB->get_record_sql($sql,$params);
+                        if($rolecapability->permission==1){
+                            $haspermission=1;
+                            break;
+                        }
+                    }
+                }
+                
+                if($haspermission) {
+                        	// Add a checkbox into the first column.
+                        	$input = html_writer::empty_tag('input', array('type' => 'checkbox', 'name' => 'bulkuser[]', 'value' => $userid));
+                        	$row->cells[] = new html_table_cell($input);
+                } else {
+                        	$row->cells[] = new html_table_cell();
+                }
+            }
+            foreach ($this->fields as $field => $label) {
+                if (is_array($label)) {
+                    $bits = array();
+                    foreach (array_keys($label) as $subfield) {
+                        if (array_key_exists($subfield, $user)) {
+                            $bits[] = html_writer::tag('div', $user[$subfield], array('class'=>'subfield subfield_'.$subfield));
+                        }
+                    }
+                    if (empty($bits)) {
+                        $bits[] = '&nbsp;';
+                    }
+                    $row->cells[] = new html_table_cell(join(' ', $bits));
+                } else {
+                    if (!array_key_exists($field, $user)) {
+                        $user[$field] = '&nbsp;';
+                    }
+                    $row->cells[] = new html_table_cell($user[$field]);
+                }
+            }
+            $this->data[] = $row;
+        }
+    }*/
+    ////////////////////////////////////////////////
+    // MODIFICATION RECIA | FIN
+    ////////////////////////////////////////////////
 
     public function initialise_javascript() {
         if (has_capability('moodle/role:assign', $this->manager->get_context())) {
