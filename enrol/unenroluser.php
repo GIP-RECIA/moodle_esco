@@ -111,5 +111,19 @@ $PAGE->navbar->add($fullname);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($fullname);
-echo $OUTPUT->confirm($message, $yesurl, $returnurl);
+
+////////////////////////////////////////////////
+// MODIFICATION RECIA | DEBUT | avant maj 2.8
+////////////////////////////////////////////////
+// echo $OUTPUT->confirm($message, $yesurl, $returnurl);
+if($haspermission||$confirm==0){
+    $message = get_string('unenroluser', 'enrol_manual', array('user'=>fullname($user, true), 'course'=>format_string($course->fullname)));
+    echo $OUTPUT->confirm($message, $yesurl, $returnurl);
+}else{  
+    $message= get_string('unenrolnotpermitted', 'enrol');
+    echo $OUTPUT->confirm($message,$returnurl,$returnurl);
+}
+////////////////////////////////////////////////
+// MODIFICATION RECIA | FIN
+////////////////////////////////////////////////
 echo $OUTPUT->footer();
