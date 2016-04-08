@@ -586,6 +586,17 @@ function forum_cron() {
         foreach ($users as $userto) {
             // Terminate if processing of any account takes longer than 2 minutes.
             core_php_time_limit::raise(120);
+			
+			// Ajout RECIA
+			if (!isset($userto->domaine)) {
+				$url_user = $CFG->wwwroot;
+			} else {
+				$url_site = parse_url($CFG->wwwroot);
+				$url_user = $url_site['scheme']."://".$userto->domaine.$url_site['path'];
+			}
+			// Fin ajout RECIA
+	
+			@set_time_limit(120); // terminate if processing of any account takes longer than 2 minutes
 
             mtrace('Processing user ' . $userto->id);
 
