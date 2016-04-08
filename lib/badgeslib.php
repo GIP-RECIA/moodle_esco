@@ -1126,8 +1126,7 @@ function badges_download($userid) {
     if ($zipper->archive_to_pathname($filelist, $tempzip)) {
         send_temp_file($tempzip, 'badges.zip');
     } else {
-        debugging("Problems with archiving the files.", DEBUG_DEVELOPER);
-        die;
+        debugging("Problems with archiving the files.");
     }
 }
 
