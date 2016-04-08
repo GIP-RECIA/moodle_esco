@@ -747,7 +747,9 @@ function forum_cron() {
                 $userfrom->customheaders = array (
                     // Headers to make emails easier to track.
                     'List-Id: "'        . $cleanforumname . '" <moodleforum' . $forum->id . '@' . $hostname.'>',
-                    'List-Help: '       . $CFG->wwwroot . '/mod/forum/view.php?f=' . $forum->id,
+					/* Remplcement RECIA
+					'List-Help: '       . $CFG->wwwroot . '/mod/forum/view.php?f=' . $forum->id,
+					Fin remplacement RECIA */
                     'Message-ID: '      . forum_get_email_message_id($post->id, $userto->id, $hostname),
                     'X-Course-Id: '     . $course->id,
                     'X-Course-Name: '   . format_string($course->fullname, true),
@@ -814,8 +816,11 @@ function forum_cron() {
                 // Make sure strings are in message recipients language.
                 $eventdata->smallmessage = get_string_manager()->get_string('smallmessage', 'forum', $smallmessagestrings, $userto->lang);
 
+				/* Remplacement RECIA
                 $contexturl = new moodle_url('/mod/forum/discuss.php', array('d' => $discussion->id), 'p' . $post->id);
                 $eventdata->contexturl = $contexturl->out();
+                Fin remplacement RECIA */
+				$eventdata->contexturl = "{$url_user}/mod/forum/discuss.php?d={$discussion->id}#p{$post->id}";
                 $eventdata->contexturlname = $discussion->name;
 
                 $mailresult = message_send($eventdata);
@@ -970,7 +975,10 @@ function forum_cron() {
 
                 $headerdata = new stdClass();
                 $headerdata->sitename = format_string($site->fullname, true);
-                $headerdata->userprefs = $CFG->wwwroot.'/user/edit.php?id='.$userid.'&amp;course='.$site->id;
+				/* Remplacement RECIA
+					$headerdata->userprefs = $CFG->wwwroot.'/user/edit.php?id='.$userid.'&amp;course='.$site->id;
+				Fin remplacement RECIA */
+					$headerdata->userprefs = $url_user.'/user/edit.php?id='.$userid.'&amp;course='.$site->id;
 
                 $posttext = get_string('digestmailheader', 'forum', $headerdata)."\n\n";
                 $headerdata->userprefs = '<a target="_blank" href="'.$headerdata->userprefs.'">'.get_string('digestmailprefs', 'forum').'</a>';
@@ -1022,13 +1030,21 @@ function forum_cron() {
                     $posttext .= "\n";
 
                     $posthtml .= "<p><font face=\"sans-serif\">".
+					/* Remplacement RECIA
                     "<a target=\"_blank\" href=\"$CFG->wwwroot/course/view.php?id=$course->id\">$shortname</a> -> ".
                     "<a target=\"_blank\" href=\"$CFG->wwwroot/mod/forum/index.php?id=$course->id\">$strforums</a> -> ".
                     "<a target=\"_blank\" href=\"$CFG->wwwroot/mod/forum/view.php?f=$forum->id\">".format_string($forum->name,true)."</a>";
+					Fin remplacement RECIA */
+                    "<a target=\"_blank\" href=\"$url_user/course/view.php?id=$course->id\">$shortname</a> -> ".
+                    "<a target=\"_blank\" href=\"$url_user/mod/forum/index.php?id=$course->id\">$strforums</a> -> ".
+                    "<a target=\"_blank\" href=\"$url_user/mod/forum/view.php?f=$forum->id\">".format_string($forum->name,true)."</a>";
                     if ($discussion->name == $forum->name) {
                         $posthtml .= "</font></p>";
                     } else {
+					/* Remplacement RECIA
                         $posthtml .= " -> <a target=\"_blank\" href=\"$CFG->wwwroot/mod/forum/discuss.php?d=$discussion->id\">".format_string($discussion->name,true)."</a></font></p>";
+					Fin remplacement RECIA */
+                        $posthtml .= " -> <a target=\"_blank\" href=\"$url_user/mod/forum/discuss.php?d=$discussion->id\">".format_string($discussion->name,true)."</a></font></p>";
                     }
                     $posthtml .= '<p>';
 
@@ -1088,8 +1104,12 @@ function forum_cron() {
                             $posttext .= "\n".format_string($post->subject,true).' '.get_string("bynameondate", "forum", $by);
                             $posttext .= "\n---------------------------------------------------------------------";
 
-                            $by->name = "<a target=\"_blank\" href=\"$CFG->wwwroot/user/view.php?id=$userfrom->id&amp;course=$course->id\">$by->name</a>";
+							/* Remplacement RECIA
+							$by->name = "<a target=\"_blank\" href=\"$CFG->wwwroot/user/view.php?id=$userfrom->id&amp;course=$course->id\">$by->name</a>";
                             $posthtml .= '<div><a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$discussion->id.'#p'.$post->id.'">'.format_string($post->subject,true).'</a> '.get_string("bynameondate", "forum", $by).'</div>';
+							Fin remplacement RECIA */
+							$by->name = "<a target=\"_blank\" href=\"$url_user/user/view.php?id=$userfrom->id&amp;course=$course->id\">$by->name</a>";
+                            $posthtml .= '<div><a target="_blank" href="'.$url_user.'/mod/forum/discuss.php?d='.$discussion->id.'#p'.$post->id.'">'.format_string($post->subject,true).'</a> '.get_string("bynameondate", "forum", $by).'</div>';
 
                         } else {
                             // The full treatment
@@ -1104,11 +1124,17 @@ function forum_cron() {
                     }
                     $footerlinks = array();
                     if ($canunsubscribe) {
+						/* Remplacement RECIA
                         $footerlinks[] = "<a href=\"$CFG->wwwroot/mod/forum/subscribe.php?id=$forum->id\">" . get_string("unsubscribe", "forum") . "</a>";
+						Fin remplacement RECIA */
+                        $footerlinks[] = "<a href=\"$CFG->$url_user/mod/forum/subscribe.php?id=$forum->id\">" . get_string("unsubscribe", "forum") . "</a>";
                     } else {
                         $footerlinks[] = get_string("everyoneissubscribed", "forum");
                     }
+					/* Remplacement RECIA
                     $footerlinks[] = "<a href='{$CFG->wwwroot}/mod/forum/index.php?id={$forum->course}'>" . get_string("digestmailpost", "forum") . '</a>';
+					Fin remplacement RECIA */
+                    $footerlinks[] = "<a href='{$url_user}/mod/forum/index.php?id={$forum->course}'>" . get_string("digestmailpost", "forum") . '</a>';
                     $posthtml .= "\n<div class='mdl-right'><font size=\"1\">" . implode('&nbsp;', $footerlinks) . '</font></div>';
                     $posthtml .= '<hr size="1" noshade="noshade" /></p>';
                 }
@@ -1177,8 +1203,18 @@ function forum_cron() {
  * @param string $replyaddress The inbound address that a user can reply to the generated e-mail with. [Since 2.8].
  * @return string The email body in plain text format.
  */
+/* Modification GIP RECIA pour prise en compte des différents domaines */
 function forum_make_mail_text($course, $cm, $forum, $discussion, $post, $userfrom, $userto, $bare = false, $replyaddress = null) {
     global $CFG, $USER;
+
+	// Ajout RECIA
+	if (!isset($userto->domaine)) {
+		$url_user = $CFG->wwwroot;
+	} else {
+		$url_site = parse_url($CFG->wwwroot);
+		$url_user = $url_site['scheme']."://".$userto->domaine.$url_site['path'];
+	}
+	// Fin ajout RECIA
 
     $modcontext = context_module::instance($cm->id);
 
@@ -1223,7 +1259,10 @@ function forum_make_mail_text($course, $cm, $forum, $discussion, $post, $userfro
     $posttext .= "\n---------------------------------------------------------------------\n";
     $posttext .= format_string($post->subject,true);
     if ($bare) {
+		/* Remplacement RECIA
         $posttext .= " ($CFG->wwwroot/mod/forum/discuss.php?d=$discussion->id#p$post->id)";
+		Fin remplacement RECIA */
+        $posttext .= " ($url_user/mod/forum/discuss.php?d=$discussion->id#p$post->id)";
     }
     $posttext .= "\n".$strbynameondate."\n";
     $posttext .= "---------------------------------------------------------------------\n";
@@ -1235,7 +1274,10 @@ function forum_make_mail_text($course, $cm, $forum, $discussion, $post, $userfro
         if ($canreply) {
             $posttext .= "---------------------------------------------------------------------\n";
             $posttext .= get_string("postmailinfo", "forum", $shortname)."\n";
+			/* Remplacement RECIA
             $posttext .= "$CFG->wwwroot/mod/forum/post.php?reply=$post->id\n";
+			Fin remplacement RECIA */
+			$posttext .= "$url_user/mod/forum/post.php?reply=$post->id\n";
         }
 
         if ($canunsubscribe) {
@@ -1243,18 +1285,27 @@ function forum_make_mail_text($course, $cm, $forum, $discussion, $post, $userfro
                 // If subscribed to this forum, offer the unsubscribe link.
                 $posttext .= "\n---------------------------------------------------------------------\n";
                 $posttext .= get_string("unsubscribe", "forum");
+				/* Remplacement RECIA
                 $posttext .= ": $CFG->wwwroot/mod/forum/subscribe.php?id=$forum->id\n";
+				Fin remplacement RECIA */
+                $posttext .= ": $url_user/mod/forum/subscribe.php?id=$forum->id\n";
             }
             // Always offer the unsubscribe from discussion link.
             $posttext .= "\n---------------------------------------------------------------------\n";
             $posttext .= get_string("unsubscribediscussion", "forum");
+			/* Remplacement RECIA
             $posttext .= ": $CFG->wwwroot/mod/forum/subscribe.php?id=$forum->id&d=$discussion->id\n";
+			Fin remplacement RECIA */
+            $posttext .= ": $url_user/mod/forum/subscribe.php?id=$forum->id&d=$discussion->id\n";
         }
     }
 
     $posttext .= "\n---------------------------------------------------------------------\n";
     $posttext .= get_string("digestmailpost", "forum");
+	/* Remplacement RECIA
     $posttext .= ": {$CFG->wwwroot}/mod/forum/index.php?id={$forum->course}\n";
+	Fin remplacement RECIA */
+	$posttext .= ": {$url_user}/mod/forum/index.php?id={$forum->course}\n";
 
     if ($replyaddress) {
         $posttext .= "\n\n" . get_string('replytopostbyemail', 'mod_forum');
@@ -1277,9 +1328,19 @@ function forum_make_mail_text($course, $cm, $forum, $discussion, $post, $userfro
  * @param string $replyaddress The inbound address that a user can reply to the generated e-mail with. [Since 2.8].
  * @return string The email text in HTML format
  */
+/* Modification GIP RECIA pour prise en compte des différents domaines */
 function forum_make_mail_html($course, $cm, $forum, $discussion, $post, $userfrom, $userto, $replyaddress = null) {
     global $CFG;
 
+	// Ajout RECIA	
+	if (!isset($userto->domaine)) {
+		$url_user = $CFG->wwwroot;
+	} else {
+		$url_site = parse_url($CFG->wwwroot);
+		$url_user = $url_site['scheme']."://".$userto->domaine.$url_site['path'];
+	}
+	// Fin ajout RECIA
+	
     if ($userto->mailformat != 1) {  // Needs to be HTML
         return '';
     }
@@ -1303,13 +1364,21 @@ function forum_make_mail_html($course, $cm, $forum, $discussion, $post, $userfro
     $posthtml .= "\n<body id=\"email\">\n\n";
 
     $posthtml .= '<div class="navbar">'.
+	/* Remplacement RECIA
     '<a target="_blank" href="'.$CFG->wwwroot.'/course/view.php?id='.$course->id.'">'.$shortname.'</a> &raquo; '.
     '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/index.php?id='.$course->id.'">'.$strforums.'</a> &raquo; '.
-    '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/view.php?f='.$forum->id.'">'.format_string($forum->name,true).'</a>';
+	'<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/view.php?f='.$forum->id.'">'.format_string($forum->name,true).'</a>';
+	Fin remplacement RECIA */
+    '<a target="_blank" href="'.$url_user.'/course/view.php?id='.$course->id.'">'.$shortname.'</a> &raquo; '.
+    '<a target="_blank" href="'.$url_user.'/mod/forum/index.php?id='.$course->id.'">'.$strforums.'</a> &raquo; '.
+    '<a target="_blank" href="'.$url_user.'/mod/forum/view.php?f='.$forum->id.'">'.format_string($forum->name,true).'</a>';
     if ($discussion->name == $forum->name) {
         $posthtml .= '</div>';
     } else {
+	/* Remplacement RECIA
         $posthtml .= ' &raquo; <a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$discussion->id.'">'.
+	Fin remplacement RECIA */
+        $posthtml .= ' &raquo; <a target="_blank" href="'.$url_user.'/mod/forum/discuss.php?d='.$discussion->id.'">'.
                      format_string($discussion->name,true).'</a></div>';
     }
     $posthtml .= forum_make_mail_post($course, $cm, $forum, $discussion, $post, $userfrom, $userto, false, $canreply, true, false);
@@ -1331,10 +1400,15 @@ function forum_make_mail_html($course, $cm, $forum, $discussion, $post, $userfro
                 'd' => $discussion->id,
             ));
         $footerlinks[] = html_writer::link($unsublink, get_string('unsubscribediscussion', 'mod_forum'));
-
+		/* Remplacement RECIA
         $footerlinks[] = '<a href="' . $CFG->wwwroot . '/mod/forum/unsubscribeall.php">' . get_string('unsubscribeall', 'forum') . '</a>';
+		Fin Remplacement RECIA */
+        $footerlinks[] = '<a href="' . $url_user . '/mod/forum/unsubscribeall.php">' . get_string('unsubscribeall', 'forum') . '</a>';
     }
+	/* Remplacement RECIA
     $footerlinks[] = "<a href='{$CFG->wwwroot}/mod/forum/index.php?id={$forum->course}'>" . get_string('digestmailpost', 'forum') . '</a>';
+	Fin remplacement RECIA */
+    $footerlinks[] = "<a href='{$url_user}/mod/forum/index.php?id={$forum->course}'>" . get_string('digestmailpost', 'forum') . '</a>';
     $posthtml .= '<hr /><div class="mdl-align unsubscribelink">' . implode('&nbsp;', $footerlinks) . '</div>';
 
     $posthtml .= '</body>';
@@ -3043,10 +3117,20 @@ function forum_get_course_forum($courseid, $type) {
  * @param string $footer
  * @return string
  */
+/* Modification GIP RECIA pour prise en compte des différents domaines */
 function forum_make_mail_post($course, $cm, $forum, $discussion, $post, $userfrom, $userto,
                               $ownpost=false, $reply=false, $link=false, $rate=false, $footer="") {
 
     global $CFG, $OUTPUT;
+
+	// Ajout RECIA
+	if (!isset($userto->domaine)) {
+		$url_user = $CFG->wwwroot;
+	} else {
+		$url_site = parse_url($CFG->wwwroot);
+		$url_user = $url_site['scheme']."://".$userto->domaine.$url_site['path'];
+	}
+	// Fin ajout RECIA
 
     $modcontext = context_module::instance($cm->id);
 
@@ -3079,7 +3163,10 @@ function forum_make_mail_post($course, $cm, $forum, $discussion, $post, $userfro
 
     $fullname = fullname($userfrom, $viewfullnames);
     $by = new stdClass();
-    $by->name = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$userfrom->id.'&amp;course='.$course->id.'">'.$fullname.'</a>';
+	/* Remplacement RECIA
+	$by->name = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$userfrom->id.'&amp;course='.$course->id.'">'.$fullname.'</a>';
+	Fin remplacement RECIA */
+    $by->name = '<a href="'.$url_user.'/user/view.php?id='.$userfrom->id.'&amp;course='.$course->id.'">'.$fullname.'</a>';
     $by->date = userdate($post->modified, '', $userto->timezone);
     $output .= '<div class="author">'.get_string('bynameondate', 'forum', $by).'</div>';
 
@@ -3114,12 +3201,18 @@ function forum_make_mail_post($course, $cm, $forum, $discussion, $post, $userfro
     $commands = array();
 
     if ($post->parent) {
+		/* Remplacement RECIA
         $commands[] = '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.
+		Fin remplacement RECIA */
+        $commands[] = '<a target="_blank" href="'.$url_user.'/mod/forum/discuss.php?d='.
                       $post->discussion.'&amp;parent='.$post->parent.'">'.get_string('parent', 'forum').'</a>';
     }
 
     if ($reply) {
-        $commands[] = '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/post.php?reply='.$post->id.'">'.
+		/* Remplacement RECIA
+		$commands[] = '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/post.php?reply='.$post->id.'">'.
+		Fin remplacement RECIA */
+        $commands[] = '<a target="_blank" href="'.$url_user.'/mod/forum/post.php?reply='.$post->id.'">'.
                       get_string('reply', 'forum').'</a>';
     }
 
@@ -3130,7 +3223,10 @@ function forum_make_mail_post($course, $cm, $forum, $discussion, $post, $userfro
 // Context link to post if required
     if ($link) {
         $output .= '<div class="link">';
+		/* Remplacement RECIA
         $output .= '<a target="_blank" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$post->discussion.'#p'.$post->id.'">'.
+		Fin remplacement RECIA */
+        $output .= '<a target="_blank" href="'.$url_user.'/mod/forum/discuss.php?d='.$post->discussion.'#p'.$post->id.'">'.
                      get_string('postincontext', 'forum').'</a>';
         $output .= '</div>';
     }
@@ -7776,3 +7872,4 @@ function forum_get_context($forumid, $context = null) {
 
     return $context;
 }
+
