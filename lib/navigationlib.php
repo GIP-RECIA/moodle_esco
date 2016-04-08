@@ -1103,7 +1103,10 @@ class global_navigation extends navigation_node {
                 $this->rootnodes['home']->action->param('redirect', '0');
             }
         }
-        $this->rootnodes['site'] = $this->add_course($SITE);
+		// MODIFICATION RECIA - DEBUT
+		if (is_siteadmin()) {
+			$this->rootnodes['site'] = $this->add_course($SITE);
+		}
         $this->rootnodes['myprofile'] = $this->add(get_string('myprofile'), null, self::TYPE_USER, null, 'myprofile');
         $this->rootnodes['currentcourse'] = $this->add(get_string('currentcourse'), null, self::TYPE_ROOTNODE, null, 'currentcourse');
         $this->rootnodes['mycourses'] = $this->add(get_string('mycourses'), new moodle_url('/my/'), self::TYPE_ROOTNODE, null, 'mycourses');
@@ -1112,8 +1115,11 @@ class global_navigation extends navigation_node {
 
         // We always load the frontpage course to ensure it is available without
         // JavaScript enabled.
-        $this->add_front_page_course_essentials($this->rootnodes['site'], $SITE);
-        $this->load_course_sections($SITE, $this->rootnodes['site']);
+		if (is_siteadmin()) {
+			$this->add_front_page_course_essentials($this->rootnodes['site'], $SITE);
+			$this->load_course_sections($SITE, $this->rootnodes['site']);
+		}
+		// MODIFICATION RECIA - FIN
 
         $course = $this->page->course;
 
