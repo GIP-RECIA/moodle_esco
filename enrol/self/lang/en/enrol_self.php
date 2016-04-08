@@ -95,6 +95,13 @@ $string['requirepassword'] = 'Require enrolment key';
 $string['requirepassword_desc'] = 'Require enrolment key in new courses and prevent removing of enrolment key from existing courses.';
 $string['role'] = 'Default assigned role';
 $string['self:config'] = 'Configure self enrol instances';
+////////////////////////////////////////////////
+// MODIFICATION RECIA | DEBUT | 2013-04-12
+////////////////////////////////////////////////
+$string['self:holdkey'] = 'Appear as the self enrolment key holder';
+////////////////////////////////////////////////
+// MODIFICATION RECIA | FIN
+////////////////////////////////////////////////
 $string['self:manage'] = 'Manage enrolled users';
 $string['self:unenrol'] = 'Unenrol users from course';
 $string['self:unenrolself'] = 'Unenrol self from the course';
