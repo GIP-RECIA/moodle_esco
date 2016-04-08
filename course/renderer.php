@@ -1302,8 +1302,22 @@ class core_course_renderer extends plugin_renderer_base {
 
         // display course contacts. See course_in_list::get_course_contacts()
         if ($course->has_course_contacts()) {
-            $content .= html_writer::start_tag('ul', array('class' => 'teachers'));
-            foreach ($course->get_course_contacts() as $userid => $coursecontact) {
+            // Début Modification RECIA - Cache les enseignants et affiche un bouton afficher/cacher enseignants
+            // Changer la valeur de nb_teacher_max pour afficher plus d'enseignants
+            $nb_teachers_max = 1;
+            $teachers = $course->get_course_contacts();
+            $nb_teachers = count($teachers);
+            if ($nb_teachers > $nb_teachers_max) {
+                $content .= html_writer::start_tag('div', array('class' => 'teachers_reply fold_reply plus'));
+                $content .= html_writer::tag('span', 'Cacher les enseignants', array('class'=>'block-hider-hide'));
+                $content .= html_writer::tag('span', 'Afficher les enseignants', array('class'=>'block-hider-show'));
+                $content .= html_writer::end_tag('div');
+                $content .= html_writer::start_tag('ul', array('class' => 'teachers folded'));
+            } else {
+                $content .= html_writer::start_tag('ul', array('class' => 'teachers'));
+            }
+            // Fin modifications RECIA
+            foreach ($teachers as $userid => $coursecontact) {
                 $name = $coursecontact['rolename'].': '.
                         html_writer::link(new moodle_url('/user/view.php',
                                 array('id' => $userid, 'course' => SITEID)),
