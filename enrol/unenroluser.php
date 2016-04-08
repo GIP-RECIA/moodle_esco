@@ -63,12 +63,41 @@ $usersurl = new moodle_url('/enrol/users.php', array('id' => $course->id));
 
 $PAGE->set_pagelayout('admin');
 navigation_node::override_active_url($usersurl);
+////////////////////////////////////////////////
+// MODIFICATION RECIA | DEBUT | avant maj 2.8
+// La requête semble poser problème en 2.8 et la modification est donc retirée
+// Le problème qui reste, et que devait corriger cette modification, est qu'un enseignant/propriétaire de cours peut se désinscrire de son cours facilement
+// => À REVOIR
+////////////////////////////////////////////////
+/*$haspermission=1;
+if($USER->id==$user->id){
+    $haspermission=0;
+    $sql= "SELECT ra.* FROM {role_assignments} ra, {context} c WHERE ra.contextid=c.id AND c.instanceid=".$course->id." AND ra.userid=".$USER->id;
+    $res = $DB->get_records_sql($sql);
 
+    foreach($res as $ra){
+        $params = array('capability' => 'enrol/manual:unenrolself');
+        $sql="SELECT rc.* FROM {role_capabilities} rc WHERE rc.roleid=".$ra->roleid." AND rc.capability=:capability";
+        $rolecapability=$DB->get_record_sql($sql,$params);
+        if($rolecapability->permission==1){
+            $haspermission=1;
+            break;
+        }
+    }
+}*/
 // If the unenrolment has been confirmed and the sesskey is valid unenrol the user.
 if ($confirm && confirm_sesskey()) {
     $plugin->unenrol_user($instance, $ue->userid);
     redirect($returnurl);
 }
+/*if($haspermission){
+    if ($confirm && confirm_sesskey() && $manager->unenrol_user($ue)) {
+        redirect($returnurl);
+    }
+}*/
+////////////////////////////////////////////////
+// MODIFICATION RECIA | FIN
+////////////////////////////////////////////////
 
 $yesurl = new moodle_url($PAGE->url, array('confirm'=>1, 'sesskey'=>sesskey()));
 $message = get_string('unenrolconfirm', 'core_enrol', array('user'=>fullname($user, true), 'course'=>format_string($course->fullname)));
